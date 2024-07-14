@@ -1,0 +1,56 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: reta-backend-develop
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: customer-peer-auth
+  namespace: reta-backend-develop
+spec:
+  selector:
+    matchLabels:
+      app: customer-pod
+  mtls:
+    mode: STRICT
+--- 
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: common-peer-auth
+  namespace: reta-backend-develop
+spec:
+  selector:
+    matchLabels:
+      app: common-pod
+  mtls:
+    mode: STRICT
+--- 
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: recruitment-peer-auth
+  namespace: reta-backend-develop
+spec:
+  selector:
+    matchLabels:
+      app: recruitment-pod
+  mtls:
+    mode: STRICT
+--- 
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: auth-peer-auth
+  namespace: reta-backend-develop
+spec:
+  selector:
+    matchLabels:
+      app: auth-pod
+  mtls:
+    mode: STRICT

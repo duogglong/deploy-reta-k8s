@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  labels:
+    app: gateway
+    service: gateway
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8888
+    name: http
+    targetPort: 8888
+  selector:
+    app: gateway
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  labels:
+    app: auth-pod
+    service: auth-service
+spec:
+  ports:
+  - port: 8890
+    name: http
+    targetPort: 8890
+  selector:
+    app: auth-pod
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service
+  labels:
+    app: customer-pod
+    service: customer-service
+spec:
+  ports:
+  - port: 8889
+    name: http
+    targetPort: 8889
+  selector:
+    app: customer-pod
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: common-service
+  labels:
+    app: common-pod
+    service: common-service
+spec:
+  ports:
+  - port: 8891
+    name: http
+    targetPort: 8891
+  selector:
+    app: common-pod
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recruitment-service
+  labels:
+    app: recruitment-pod
+    service: recruitment-service
+spec:
+  ports:
+  - port: 8892
+    name: http
+    targetPort: 8892
+  selector:
+    app: recruitment-pod
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgresql
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

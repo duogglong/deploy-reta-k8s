@@ -1,0 +1,135 @@
+** K8s basic
+- kubectl delete pod <name_id> -n <namespaces>: delete pods in k8s
+- kubectl describe pod <name_id> -n <namespaces>
+- kubectl apply -f samples/addons: 
+- kubectl delete --recursive -f samples/addons: unapply 
+- kubectl rollout status deployment/<name> -n <namespace>: check status of deployment
+- kubectl get deployment -n <namespace>: get list deployment by namespace
+- kubectl delete deployment <name> -n <namespace>: delete deployment
+
+** Istio
+- istio analyze: check validate issues
+- istioctl dashboard kiali: Access the kiali dashboard.
+- kubectl -n istio-system create token kiali-service-account: Get token to login kiali
+- kubectl label namespace <namespace> istio-injection=enabled: enable inject istio
+- kubectl rollout restart deployment -n reta-backend <name>
+
+** Enable inject to namespace
+- kubectl label namespace reta-backend \istio-injection=enabled
+- kubectl label namespace reta-backend-staging istio-injection=enabled
+- 
+
+** Namespaces
+- kubectl get namespaces: show all namespaces
+- kubectl create namespace <name>: create namespace
+- kubectl get namespaces --show-labels: show list namespaces
+
+*** Reta ***
+*** APPLY DEPLOYMENT
+- kubectl -n reta-backend apply -f deployment/gateway-deployment.yml
+- kubectl -n reta-backend apply -f deployment/customer-deployment.yml
+- kubectl -n reta-backend apply -f deployment/auth-deployment.yml
+
+- kubectl -n database apply -f deployment/database-deployment.yml
+
+*** DELETE DEPLOYMENT
+- kubectl -n reta-backend delete deployment gateway-v1
+- kubectl -n reta-backend delete deployment customer-v1
+- kubectl -n reta-backend delete deployment auth-v1
+
+kubectl -n reta-test delete deployment gateway-v1
+
+*** LOGS 
+- kubectl logs -n reta-backend <name>: log pod
+- kubectl logs -c istio-proxy -n reta-backend -f <pod_name>
+
+*** APPLY SERVICE
+- kubectl -n reta-backend apply -f service/gateway-service.yml
+- kubectl -n reta-backend apply -f service/customer-service.yml
+- kubectl -n reta-backend apply -f service/auth-service.yml
+- kubectl -n reta-backend apply -f service/gateway-service-cert.yml
+- kubectl -n reta-backend apply -f service/common-service.yml
+- kubectl -n reta-backend apply -f service/common-service-v2.yml
+
+- kubectl -n reta-test apply -f service/gateway-service.yml
+- kubectl -n reta-test apply -f service/customer-service.yml
+
+- kubectl -n database apply -f service/database-service.yml
+
+- kubectl -n reta-backend apply -f service/customer-virtual-service.yml
+- kubectl -n reta-backend apply -f service/auth-virtual-service.yml
+
+- kubectl -n reta-backend apply -f service/customer-entry-service.yml
+- kubectl -n reta-backend apply -f service/auth-entry-service.yml
+- kubectl -n reta-backend apply -f service/gateway-entry-service.yml
+
+*** APPLE SERVICE ACCOUNT
+x- kubectl -n reta-backend apply -f service-account/auth-service-account.yml
+x- kubectl -n reta-backend apply -f service-account/gateway-service-account.yml
+x- kubectl -n reta-backend apply -f service-account/customer-service-account.yml
+
+*** DESTINATION
+- kubectl -n reta-backend apply -f destination-rule/customer-destination-rule.yml
+- kubectl -n reta-backend apply -f destination-rule/common-destination-rule.yml
+
+*** APPLY AUTH
+- kubectl -n reta-backend apply -f policy/auth-policy.yml
+- kubectl apply -f peer-auth/reta-peer-auth.yml
+
+*** DELETE AUTH
+- kubectl delete -n reta-backend -f policy/auth-policy.yml
+- kubectl delete -f peer-auth/reta-peer-auth.yml
+
+*** DELETE AUTH
+- kubectl -n reta-backend delete peerauthentication <name>
+
+*** DELETE SERVICE
+- kubectl delete -n reta-backend -f service-account/auth-service-account.yml
+- kubectl delete -n reta-backend -f service-account/customer-service-account.yml
+- kubectl delete -n reta-backend -f service/auth-entry-service.yml
+- kubectl delete -n reta-backend -f service/customer-entry-service.yml
+- kubectl delete -n reta-backend -f service/auth-virtual-service.yml
+- kubectl delete -n reta-backend -f service/customer-virtual-service.yml
+- kubectl delete -n reta-backend -f service/auth-service.yml
+- kubectl delete -n reta-backend -f service/customer-service.yml
+- kubectl delete -n reta-backend -f service/gateway-service.yml
+- kubectl delete -n reta-backend -f service/gateway-service-cert.yml
+
+*** GET COMPONENT
+- kubectl get deployment -n reta-backend
+- kubectl get svc -n reta-backend
+- kubectl get pods -n reta-backend
+- kubectl get virtualservices -n reta-backend
+- kubectl get serviceentries -n reta-backend
+- kubectl get svc,pods,virtualservices,serviceentries -n reta-backend
+- kubectl get peerauthentication -n reta-backend
+
+*** DESCRIBE
+- kubectl describe pod -n reta-backend <name>
+- kubectl describe service -n reta-backend <name>
+
+*** EXEC
+- kubectl exec -it -n reta-backend <name> -- /bin/bash
+
+*** CERTIFICATE
+- kubectl get secrets -n istio-system
+- kubectl get secret istio-ca-secret -n istio-system -o yam
+
+curl http://auth-service.reta-backend.svc.cluster.local:8890/auth/ping
+curl http://customer.reta-backend.svc.cluster.local:8889/customer/ping
+curl http://gateway.reta-backend.svc.cluster.local:8888/ping
+curl http://localhost:8888/ping
+
+*** PROMETHEUS
+- kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.21/samples/addons/prometheus.yaml
+- kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.21/samples/addons/grafana.yaml
+- kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.21/samples/addons/jaeger.yaml
+- istioctl dashboard jaeger
+
+** Xem dung lượng pod
+- kubectl top pod -n reta-backend portainer-pod --containers
+- kubectl get pod customer-v1-676445db64-dlq2n -n reta-backend -o yaml
+- kubectl annotate namespace reta-backend sidecar.istio.io/inject=false
+- kubectl delete pod customer-v1-676445db64-dlq2n -n reta-backend
+
+asia-southeast1-docker.pkg.dev/reta-422416/reta-registry/
